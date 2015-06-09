@@ -5,7 +5,7 @@
     <name>rb-samza-streaming</name>
     <groupId>net.redborder</groupId>
     <artifactId>rb-samza-streaming</artifactId>
-    <version>0.0.1</version>
+    <version>0.0.2-SNAPSHOT</version>
 
     <scm>
         <developerConnection>scm:git:git@gitlab.redborder.lan:agomez/rb-samza-streaming.git</developerConnection>
