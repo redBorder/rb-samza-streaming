@@ -9,7 +9,7 @@
 
     <scm>
         <developerConnection>scm:git:git@gitlab.redborder.lan:agomez/rb-samza-streaming.git</developerConnection>
-        <tag>rb-samza-streaming-0.0.1</tag>
+        <tag>HEAD</tag>
     </scm>
 
     <properties>
