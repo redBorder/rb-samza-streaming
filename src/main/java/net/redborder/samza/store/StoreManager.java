@@ -15,6 +15,7 @@ import java.util.Map;
 public class StoreManager {
 
     private static Map<String, Store> stores = new LinkedHashMap<>();
+    private static Map<String, IStoreExtension> extensions = new HashMap<>();
     private String partitionCacheKey;
 
     public StoreManager(Config config, TaskContext context, String defaultKey) {
@@ -87,6 +88,15 @@ public class StoreManager {
         }
 
         return enrichment;
+    }
+
+
+    public void addExtension(String extensionName, IStoreExtension extension) {
+        extensions.put(extensionName, extension);
+    }
+
+    public IStoreExtension getExtension(String extensionName){
+        return extensions.get(extensionName);
     }
 
     private class Store {
