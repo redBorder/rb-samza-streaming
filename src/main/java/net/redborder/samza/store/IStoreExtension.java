@@ -8,4 +8,5 @@ public interface IStoreExtension {
     Map<String, Object> get(String namespace, String collection, String key);
     void increment(String namespace, String collection, String key, List<String> columns, List<Integer> values);
     void decrement(String namespace, String collection, String key, List<String> columns, List<Integer> values);
+    Object getClient();
 }
