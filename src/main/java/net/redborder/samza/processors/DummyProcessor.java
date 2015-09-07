@@ -6,6 +6,12 @@ import org.slf4j.LoggerFactory;
 
 import java.lang.Object;import java.lang.Override;import java.lang.String;import java.util.Map;
 
+/**
+ * This DummyProcessor will be used by the Processor base class if the class associated
+ * with a streamName is not present or was not found. It does nothing except logging a warning
+ * to let the user know that there is a topic with an unknown class.
+ */
+
 public class DummyProcessor extends Processor<Map<String, Object>> {
     private static final Logger log = LoggerFactory.getLogger(DummyProcessor.class);
 
