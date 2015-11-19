@@ -12,7 +12,7 @@ import java.lang.Object;import java.lang.Override;import java.lang.String;import
  * to let the user know that there is a topic with an unknown class.
  */
 
-public class DummyProcessor extends Processor<Map<String, Object>> {
+public class DummyProcessor extends Processor {
     private static final Logger log = LoggerFactory.getLogger(DummyProcessor.class);
 
     public DummyProcessor() {

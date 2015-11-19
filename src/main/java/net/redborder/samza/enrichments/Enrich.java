@@ -1,5 +1,7 @@
 package net.redborder.samza.enrichments;
 
+import net.redborder.samza.store.StoreManager;
+
 import java.util.Map;
 
 /**
@@ -9,14 +11,22 @@ import java.util.Map;
  * adding new fields to the message, and returns it.
  */
 
-public interface IEnrich {
+public abstract class Enrich {
+    StoreManager storeManager;
+
+    public Enrich(StoreManager storeManager) {
+        this.storeManager = storeManager;
+    }
 
     /**
      * Enriches a given message.
      * This method modify or adds a new field (or fields) to the given message.
+     *
      * @param message The message to enrich
      * @return The given message enriched
      */
 
-    Map<String, Object> enrich(Map<String, Object> message);
+    public abstract Map<String, Object> enrich(Map<String, Object> message);
+
+
 }

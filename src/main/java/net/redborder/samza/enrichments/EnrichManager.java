@@ -15,7 +15,7 @@ import java.util.Map;
 
 public class EnrichManager {
     // The list of available enrichments
-    List<IEnrich> enrichments;
+    List<Enrich> enrichments;
 
     // Constructs a new enrichment manager
     public EnrichManager() {
@@ -27,7 +27,7 @@ public class EnrichManager {
      * @param enrich The enrichment to be added
      */
 
-    public void addEnrichment(IEnrich enrich) {
+    public void addEnrichment(Enrich enrich) {
         enrichments.add(enrich);
     }
 
@@ -44,7 +44,7 @@ public class EnrichManager {
         Map<String, Object> enrichments = new HashMap<>();
         enrichments.putAll(message);
 
-        for (IEnrich enrich : this.enrichments) {
+        for (Enrich enrich : this.enrichments) {
             enrichments.putAll(enrich.enrich(message));
         }
 
