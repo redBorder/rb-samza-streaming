@@ -150,6 +150,16 @@ public abstract class StoreExtension<T> {
         return result;
     }
 
+    public void removeFromLocalSore(StoreExtensionKey storeExtensionKey) {
+        Map<String, Object> result = null;
+
+        if (localStore != null) {
+            localStore.delete(storeExtensionKey.mergeKey);
+        } else {
+            log.warn("You are trying use worksWithLocalStore but you localStore is disable!! StoreExtension[{}]", name);
+        }
+    }
+
     public Map<String, Object> transform(Map<String, Object> cacheData) {
         if (cacheData != null && transformProcess != null) {
             return transformProcess.transform(cacheData);
@@ -179,6 +189,19 @@ public abstract class StoreExtension<T> {
      */
 
     public abstract void remove(String namespace, String collection, String key);
+
+
+    public void remove(StoreExtensionKey storeExtensionKey) {
+        remove(storeExtensionKey, false);
+    }
+
+    public void remove(StoreExtensionKey storeExtensionKey, Boolean worksWithLocalStore) {
+        if (worksWithLocalStore) {
+            localStore.delete(storeExtensionKey.mergeKey);
+        }
+
+        remove(storeExtensionKey.namespace, storeExtensionKey.collection, storeExtensionKey.key);
+    }
 
     /**
      * Gets a collection of values associated with a key
