@@ -41,7 +41,8 @@ public abstract class StoreExtension<T> {
         this.localStore = localStore;
         this.storeExtensionKeys = new LinkedList<>();
         this.transformProcess = transformProcess;
-        List<String> extensionKeys = config.getList("redborder.stores.extension." + name + ".keys");
+        List<String> extensionKeys = config.getList("redborder.stores.extension." + name + ".keys", Collections.EMPTY_LIST);
+
 
         for (String extensionKey : extensionKeys) {
             String[] keys = extensionKey.split(" ");

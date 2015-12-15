@@ -45,4 +45,9 @@ public class StoreExtensionKey {
             return new StoreExtensionKey(namespace, collection, key, transform);
         }
     }
+
+    @Override
+    public String toString() {
+        return "Namespace: " + namespace + " Collection: " + collection + " Key: " + key;
+    }
 }

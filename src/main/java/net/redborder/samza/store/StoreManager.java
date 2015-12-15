@@ -88,6 +88,7 @@ public class StoreManager {
     private void initStoresExtensions(Config config, TaskContext context) {
         List<String> extensionsNames = config.getList("redborder.stores.extensions", Collections.<String>emptyList());
 
+        log.info("Making stores extensions: ");
         for (String extensionName : extensionsNames) {
             if (!extensionsHash.containsKey(extensionName)) {
                 try {
@@ -106,8 +107,6 @@ public class StoreManager {
 
                     String className = config.get("redborder.stores.extension." + extensionName + ".class");
                     if (className != null) {
-                        Config extensionConfig = config.subset("redborder.stores.extension." + extensionName);
-
                         Boolean useLocalStore = config.getBoolean("redborder.stores.extension." + extensionName + ".useLocalStore", false);
                         Class foundClass = Class.forName(className);
                         StoreExtension extension;
@@ -115,13 +114,14 @@ public class StoreManager {
                         if (useLocalStore) {
                             KeyValueStore<String, Map<String, Object>> keyValueStore = (KeyValueStore<String, Map<String, Object>>) context.getStore(extensionName);
                             Constructor constructor = foundClass.getConstructor(String.class, Config.class, TransformProcess.class, KeyValueStore.class);
-                            extension = (StoreExtension) constructor.newInstance(extensionName, extensionConfig, transformProcess, keyValueStore);
+                            extension = (StoreExtension) constructor.newInstance(extensionName, config, transformProcess, keyValueStore);
                         } else {
                             Constructor constructor = foundClass.getConstructor(String.class, Config.class, TransformProcess.class);
-                            extension = (StoreExtension) constructor.newInstance(extensionName, extensionConfig, transformProcess);
+                            extension = (StoreExtension) constructor.newInstance(extensionName, config, transformProcess);
                         }
 
                         extensionsHash.put(extensionName, extension);
+                        log.info("  * Store Extension: {} {}", extensionName, extension.getExtensionsKeys());
                     } else {
                         log.warn("Extension {} is declared, but doesn't have associated class. Don't create it!", extensionName);
                     }
@@ -137,19 +137,19 @@ public class StoreManager {
     private void initWindowStores(Config config) {
         List<String> windowStoresNames = config.getList("redborder.stores.windows", Collections.<String>emptyList());
 
+        log.info("Making stores windows: ");
         for (String windowStoreName : windowStoresNames) {
             try {
                 String className = config.get("redborder.stores.window." + windowStoreName + ".class");
                 if (className != null) {
-                    Config extensionConfig = config.subset("redborder.stores.window." + windowStoreName);
-
                     Class foundClass = Class.forName(className);
                     Constructor constructor = foundClass.getConstructor(String.class, KeyValueStore.class, Config.class);
-                    WindowStore windowStore = (WindowStore) constructor.newInstance(windowStoreName, getStore(windowStoreName), extensionConfig);
+                    WindowStore windowStore = (WindowStore) constructor.newInstance(windowStoreName, getStore(windowStoreName), config);
                     windowStores.put(windowStoreName, windowStore);
                 } else {
                     log.warn("WindowStore {} is declared, but doesn't have associated class. Don't create it!", windowStoreName);
                 }
+                log.info("  * Store Window: {} {}", windowStoreName);
             } catch (ClassNotFoundException e) {
                 log.error("Couldn't find the class associated with the WindowStore: " + windowStoreName, e);
             } catch (NoSuchMethodException | InstantiationException | InvocationTargetException | IllegalAccessException e) {
@@ -355,11 +355,4 @@ public class StoreManager {
             windowStore.refresh();
         }
     }
-
-
-    /**
-     * This class stores the relevant data associated with an store.
-     */
-
-
 }
