@@ -223,29 +223,35 @@ public class StoreManager {
         for (String store : enrichWithStores) {
             Store storeData = stores.get(store);
             if (storeData != null) {
-                List<String> keys = storeData.getKeys();
-                StringBuilder builder = new StringBuilder();
+                List<String> allKeys = storeData.getKeys();
 
-                for (String key : keys) {
-                    String kv = (String) enrichment.get(key);
-                    if (kv != null) {
-                        builder.append(kv);
+                for(String allKey : allKeys) {
+                    String [] keys = allKey.split(":");
+                    StringBuilder builder = new StringBuilder();
+
+                    for (String key : keys) {
+                        String kv = (String) enrichment.get(key);
+                        if (kv != null) {
+                            builder.append(kv);
+                        }
                     }
-                }
 
-                String mergeKey = builder.toString();
-                KeyValueStore<String, Map<String, Object>> keyValueStore = storeData.getStore();
-                Map<String, Object> contents = keyValueStore.get(mergeKey);
-                Map<String, Object> transform = storeData.transform(contents);
+                    String mergeKey = builder.toString();
+                    KeyValueStore<String, Map<String, Object>> keyValueStore = storeData.getStore();
+                    Map<String, Object> contents = keyValueStore.get(mergeKey);
+                    Map<String, Object> transform = storeData.transform(contents);
 
-                if (transform != null) {
-                    if (storeData.mustOverwrite()) {
-                        enrichment.putAll(transform);
-                    } else {
-                        Map<String, Object> newData = new HashMap<>();
-                        newData.putAll(transform);
-                        newData.putAll(enrichment);
-                        enrichment = newData;
+                    if (transform != null) {
+                        if (storeData.mustOverwrite()) {
+                            enrichment.putAll(transform);
+                        } else {
+                            Map<String, Object> newData = new HashMap<>();
+                            newData.putAll(transform);
+                            newData.putAll(enrichment);
+                            enrichment = newData;
+                        }
+
+                        break;
                     }
                 }
             } else {

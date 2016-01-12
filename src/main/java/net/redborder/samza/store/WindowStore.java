@@ -17,7 +17,7 @@ public abstract class WindowStore {
     public WindowStore(String name, Config config, KeyValueStore<String, Map<String, Object>> store){
         this.store = store;
         this.lastUpdate = config.getBoolean("redborder.stores.window." + name + ".lastUpdate", true);
-        prepare();
+        prepare(config);
     }
 
     public Map<String, Object> getData(String key){
@@ -27,32 +27,34 @@ public abstract class WindowStore {
     public void refresh(){
         Map<String, Map<String, Object>> allData = update();
 
-        if(lastUpdate) {
-            KeyValueIterator<String, Map<String, Object>> iterator = store.all();
-            List<String> toRemove = new ArrayList<>();
+        if(allData != null) {
+            if (lastUpdate) {
+                KeyValueIterator<String, Map<String, Object>> iterator = store.all();
+                List<String> toRemove = new ArrayList<>();
 
-            while (iterator.hasNext()) {
-                Entry<String, Map<String, Object>> entry = iterator.next();
-                String key = entry.getKey();
+                while (iterator.hasNext()) {
+                    Entry<String, Map<String, Object>> entry = iterator.next();
+                    String key = entry.getKey();
 
-                if (!allData.containsKey(key)) {
-                    toRemove.add(key);
+                    if (!allData.containsKey(key)) {
+                        toRemove.add(key);
+                    }
+                }
+
+                for (String key : toRemove) {
+                    store.delete(key);
                 }
             }
 
-            for (String key : toRemove) {
-                store.delete(key);
+            for (Map.Entry<String, Map<String, Object>> data : allData.entrySet()) {
+                String key = data.getKey();
+                Map<String, Object> value = data.getValue();
+
+                store.put(key, value);
             }
-        }
-
-        for(Map.Entry<String, Map<String, Object>> data : allData.entrySet()){
-            String key = data.getKey();
-            Map<String, Object> value = data.getValue();
-
-            store.put(key, value);
         }
     }
 
-    abstract public void prepare();
+    abstract public void prepare(Config config);
     abstract public Map<String, Map<String, Object>> update();
 }
