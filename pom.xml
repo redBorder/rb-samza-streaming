@@ -13,7 +13,7 @@
     </scm>
 
     <properties>
-        <samza.version>0.9.1</samza.version>
+        <samza.version>0.10.0</samza.version>
     </properties>
 
     <distributionManagement>

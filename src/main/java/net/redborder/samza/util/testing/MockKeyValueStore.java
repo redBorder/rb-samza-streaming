@@ -30,6 +30,24 @@ public class MockKeyValueStore implements KeyValueStore<String, Map<String, Obje
     }
 
     @Override
+    public Map<String, Map<String, Object>> getAll(List<String> list) {
+        Map<String, Map<String, Object>> result = new HashMap<>();
+
+        for(String key : list){
+            result.put(key, store.get(key));
+        }
+
+        return result;
+    }
+
+    @Override
+    public void deleteAll(List<String> list) {
+        for(String key : list) {
+            store.remove(key);
+        }
+    }
+
+    @Override
     public void delete(String s) {
         store.remove(s);
     }
