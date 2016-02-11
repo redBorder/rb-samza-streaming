@@ -17,7 +17,6 @@ public abstract class WindowStore {
     public WindowStore(String name, Config config, KeyValueStore<String, Map<String, Object>> store){
         this.store = store;
         this.lastUpdate = config.getBoolean("redborder.stores.window." + name + ".lastUpdate", true);
-        prepare(config);
     }
 
     public Map<String, Object> getData(String key){

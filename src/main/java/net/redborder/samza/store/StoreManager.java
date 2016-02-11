@@ -143,13 +143,14 @@ public class StoreManager {
                 String className = config.get("redborder.stores.window." + windowStoreName + ".class");
                 if (className != null) {
                     Class foundClass = Class.forName(className);
-                    Constructor constructor = foundClass.getConstructor(String.class, KeyValueStore.class, Config.class);
-                    WindowStore windowStore = (WindowStore) constructor.newInstance(windowStoreName, getStore(windowStoreName), config);
+                    Constructor constructor = foundClass.getConstructor(String.class, Config.class, KeyValueStore.class);
+                    WindowStore windowStore = (WindowStore) constructor.newInstance(windowStoreName, config, getStore(windowStoreName));
+                    windowStore.prepare(config);
                     windowStores.put(windowStoreName, windowStore);
                 } else {
                     log.warn("WindowStore {} is declared, but doesn't have associated class. Don't create it!", windowStoreName);
                 }
-                log.info("  * Store Window: {} {}", windowStoreName);
+                log.info("  * Store Window: {}", windowStoreName);
             } catch (ClassNotFoundException e) {
                 log.error("Couldn't find the class associated with the WindowStore: " + windowStoreName, e);
             } catch (NoSuchMethodException | InstantiationException | InvocationTargetException | IllegalAccessException e) {
@@ -225,8 +226,8 @@ public class StoreManager {
             if (storeData != null) {
                 List<String> allKeys = storeData.getKeys();
 
-                for(String allKey : allKeys) {
-                    String [] keys = allKey.split(":");
+                for (String allKey : allKeys) {
+                    String[] keys = allKey.split(":");
                     StringBuilder builder = new StringBuilder();
 
                     for (String key : keys) {
@@ -240,6 +241,8 @@ public class StoreManager {
                     KeyValueStore<String, Map<String, Object>> keyValueStore = storeData.getStore();
                     Map<String, Object> contents = keyValueStore.get(mergeKey);
                     Map<String, Object> transform = storeData.transform(contents);
+
+                    log.debug("Query KV store[{}] key[{}], value[" + contents + "]", store, mergeKey);
 
                     if (transform != null) {
                         if (storeData.mustOverwrite()) {
@@ -296,7 +299,7 @@ public class StoreManager {
                     Map<String, Object> contents = storeExtension.get(storeExtensionKey);
                     Map<String, Object> transform;
 
-                    if(storeExtensionKey.transform) {
+                    if (storeExtensionKey.transform) {
                         transform = storeExtension.transform(contents);
                     } else {
                         transform = contents;

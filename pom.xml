@@ -5,7 +5,7 @@
     <name>rb-samza-streaming</name>
     <groupId>net.redborder</groupId>
     <artifactId>rb-samza-streaming</artifactId>
-    <version>0.4.1-SNAPSHOT</version>
+    <version>0.3.2-SNAPSHOT</version>
 
     <scm>
         <developerConnection>scm:git:git@gitlab.redborder.lan:bigdata/rb-samza-streaming.git</developerConnection>
@@ -56,12 +56,6 @@
             <groupId>org.apache.samza</groupId>
             <artifactId>samza-yarn_2.10</artifactId>
             <version>${samza.version}</version>
-            <exclusions>
-                <exclusion>
-                    <groupId>com.google.guava</groupId>
-                    <artifactId>guava</artifactId>
-                </exclusion>
-            </exclusions>
         </dependency>
         <dependency>
             <groupId>org.apache.samza</groupId>

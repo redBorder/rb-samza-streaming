@@ -23,6 +23,7 @@ public class StreamProcessor implements StreamTask, InitableTask, WindowableTask
         this.config = config;
         this.context = context;
         this.storeManager = new StoreManager(config, context);
+        this.storeManager.refreshWindowStores();
     }
 
     @Override
